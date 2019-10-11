@@ -74,17 +74,30 @@ namespace urlshorten.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        public async Task<ActionResult<string>> Shorten(string url)
+        {
+            string result;
+
+            using UrlShorten _urlShorten = new UrlShorten();
+            result = await Task.Run(() => {  return _urlShorten.Encode(_urlShorten.Decode(url)); });
+            
+            return "https://ac-url/" + result;
+        }
+
+
         // POST: api/Url
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<UrlViewModel>> PostUrlViewModel(UrlViewModel urlViewModel)
-        {
-            _context.UrlViewModels.Add(urlViewModel);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //public async Task<ActionResult<UrlViewModel>> PostUrlViewModel(UrlViewModel urlViewModel)
+        //{
 
-            return CreatedAtAction("GetUrlViewModel", new { id = urlViewModel.Id }, urlViewModel);
-        }
+        //    _context.UrlViewModels.Add(urlViewModel);
+        //    await _context.SaveChangesAsync();
+
+        //    return CreatedAtAction("GetUrlViewModel", new { id = urlViewModel.Id }, urlViewModel);
+        //}
 
         // DELETE: api/Url/5
         [HttpDelete("{id}")]
