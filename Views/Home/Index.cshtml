@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Alachua County URL Shortener Service";
+}
+
+<div class="text-center">
+    <h5 class="display-4">Alachua County URL Shortener Service</h5>
+</div>
+<form action="">
+    <div class="form-row">
+        <div class="col-sm-10">
+            <label for="url-entry" id="url-entry-label">Enter Url:</label>
+            <div class="input-group mb3 panel" id="url-entry">
+                <input type="text" id="url-entry-input" class="form-control form-control-lg" placeholder="e.g. https://alachuacounty.us/reallylong/url/thatgoes/somewhere.aspx" aria-label="Url Entry">
+            </div>
+        </div>
+        <div class="col-sm-10 btn-buffer">
+            <a href="#" class="btn btn-primary">Submit URL</a>
+        </div>
+    </div>
+    <div class="form-row top-buffer">
+        <div class="col-sm-10">
+            <label for="url-entry" id="url-shorten-label">Shortened Url:</label>
+            <div class="input-group mb3 panel" id="url-entry">
+                <input type="text" id="url-shorten-input" class="form-control form-control-lg" placeholder="e.g. https://ac-url/ZXh7865bubz" aria-label="Url Entry" disabled>
+            </div>
+        </div>
+    </div>
+</form>

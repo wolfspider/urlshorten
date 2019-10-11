@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "urlshorten", "urlshorten.csproj", "{923DE411-553B-49F5-8110-52CCF0EB943D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{923DE411-553B-49F5-8110-52CCF0EB943D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{923DE411-553B-49F5-8110-52CCF0EB943D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{923DE411-553B-49F5-8110-52CCF0EB943D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{923DE411-553B-49F5-8110-52CCF0EB943D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1505AC3-096F-4613-BAA0-0B98F551B999}
+	EndGlobalSection
+EndGlobal
