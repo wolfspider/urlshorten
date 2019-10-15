@@ -4,12 +4,20 @@
 // Write your JavaScript code.
 
 
-function getShortUrl(url) {
+function getShortUrl() {
 //response text needs to be specified here for return type
-    fetch(`https://localhost:44340/api/Url?url=${url}`, { method: "POST" })
+    
+    var url = document.querySelector("#url-entry-input").value;
+
+    fetch(`https://localhost:5001/api/Url?url=${url}`, { method: "POST" })
         .then(function (response) {
             return response.text().then(function (text) {
                 console.log(text);
+                
+                var input = document.querySelector("#url-shorten-input");
+
+                input.value = text;
+
             })
         });
 }

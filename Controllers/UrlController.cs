@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http.Results;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using urlshorten;
 using urlshorten.Models;
 
 namespace urlshorten.Controllers
@@ -75,30 +71,17 @@ namespace urlshorten.Controllers
             return NoContent();
         }
 
+        // POST: api/Url
         [HttpPost]
         public async Task<ActionResult<string>> Shorten(string url)
         {
-            return "https://ac-url/" + await Task.Run(() =>
+            return "https://url.acbocc.us/" + await Task.Run(() =>
             {
                 using UrlShorten _urlShorten = new UrlShorten(url);
                 return _urlShorten.ShortenedUrl;
          
             }); 
         }
-
-
-        // POST: api/Url
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        //[HttpPost]
-        //public async Task<ActionResult<UrlViewModel>> PostUrlViewModel(UrlViewModel urlViewModel)
-        //{
-
-        //    _context.UrlViewModels.Add(urlViewModel);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetUrlViewModel", new { id = urlViewModel.Id }, urlViewModel);
-        //}
 
         // DELETE: api/Url/5
         [HttpDelete("{id}")]
