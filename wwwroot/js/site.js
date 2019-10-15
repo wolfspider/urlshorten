@@ -6,7 +6,10 @@
 
 function getShortUrl(url) {
 
-    fetch("https://localhost:44340/api/Url?url='alachua'", { method: "POST" })
-        .then((rs) => console.log(rs));
-
+    fetch(`https://localhost:44340/api/Url?url=${url}`, { method: "POST" })
+        .then(function (response) {
+            return response.text().then(function (text) {
+                console.log(text);
+            })
+        });
 }

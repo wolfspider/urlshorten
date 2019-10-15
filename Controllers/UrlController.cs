@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -77,12 +78,12 @@ namespace urlshorten.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> Shorten(string url)
         {
-            string result;
-
-            using UrlShorten _urlShorten = new UrlShorten();
-            result = await Task.Run(() => {  return _urlShorten.Encode(_urlShorten.Decode(url)); });
-            
-            return "https://ac-url/" + result;
+            return "https://ac-url/" + await Task.Run(() =>
+            {
+                using UrlShorten _urlShorten = new UrlShorten(url);
+                return _urlShorten.ShortenedUrl;
+         
+            }); 
         }
 
 

@@ -16,23 +16,24 @@ namespace urlshorten
 
         internal int idecode;
 
-        internal char[] dest;
+        public string ShortenedUrl { get; set; }
+
+        public UrlShorten(string url)
+            : base()
+        {
+            ShortenedUrl = Encode(Decode(url));
+        }
 
         public string Encode(int idx)
         {
             do
             {
                 shortid.Append(alphanum[idx % alphabase]);
-                idx /= alphabase;
-                idx = Math.Abs(idx);
+                idx = Math.Abs(idx /= alphabase);
 
             } while (idx > 0);
 
-            dest = new char[shortid.Length];
-
-            shortid.CopyTo(0, dest, 0, shortid.Length);
-
-            return new String(dest.Reverse().ToArray());
+            return new string(shortid.ToString().Reverse().ToArray());
         }
 
         public int Decode(String str)
@@ -40,10 +41,10 @@ namespace urlshorten
             foreach (var chr in str)
             {
                 idecode *= alphabase;
-                idecode += alphanum.IndexOf(chr);
+                idecode = Math.Abs(idecode += alphanum.IndexOf(chr));
             }
-            
-            return Math.Abs(idecode);
+
+            return idecode;
         }
 
         #region IDisposable Support
@@ -56,11 +57,9 @@ namespace urlshorten
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
+                    shortid = new StringBuilder();
+                    idecode = new int();
                 }
-
-                shortid = new StringBuilder();
-                idecode = new int();
-                dest = new char[0];
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // TODO: set large fields to null.
@@ -70,11 +69,11 @@ namespace urlshorten
         }
 
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~UrlShorten()
-        // {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
+        ~UrlShorten()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
 
         // This code added to correctly implement the disposable pattern.
         void IDisposable.Dispose()
@@ -82,7 +81,7 @@ namespace urlshorten
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
             // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
         #endregion
 
