@@ -5,7 +5,7 @@
 
 
 function getShortUrl(url) {
-
+//response text needs to be specified here for return type
     fetch(`https://localhost:44340/api/Url?url=${url}`, { method: "POST" })
         .then(function (response) {
             return response.text().then(function (text) {
