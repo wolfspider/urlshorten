@@ -18,10 +18,11 @@ namespace urlshorten
 
         public string ShortenedUrl { get; set; }
 
-        public UrlShorten(string url)
+        public UrlShorten(string url = "")
             : base()
         {
-            ShortenedUrl = Encode(Decode(url));
+            if(url != "")
+                ShortenedUrl = Encode(Decode(url));
         }
 
         public string Encode(int idx)

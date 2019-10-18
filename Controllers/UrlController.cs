@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -75,12 +76,46 @@ namespace urlshorten.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> Shorten(string url)
         {
+                  
             return "https://url.acbocc.us/" + await Task.Run(() =>
             {
+                
+                Uri uri = null;
+
+                //test to see if string is correct url
+                
+                if (!Uri.TryCreate(url, UriKind.Absolute, out uri) || null == uri)
+                    return "invalid url (e.g. http://alachuacounty.us/Pages/AlachuaCounty)";
+
+                url = uri.Host + uri.PathAndQuery + uri.Fragment;
+
                 using UrlShorten _urlShorten = new UrlShorten(url);
-                return _urlShorten.ShortenedUrl;
+                    return _urlShorten.ShortenedUrl;
          
-            }); 
+            });
+
+        }
+
+        [HttpPost("{id}")]
+        public async Task<ActionResult<string>> Decode(string id)
+        {
+
+            return await Task.Run(() => {
+
+                using (UrlShorten _urlShorten = new UrlShorten())
+                {
+                    var code = _urlShorten.Decode(id);
+
+                    //Save the code here for shortened URL into one of the UrlView ents
+
+                    //obviously, this part needs to be planned out more...
+                    
+                    return "saved";
+                }
+
+            });
+
+            
         }
 
         // DELETE: api/Url/5
