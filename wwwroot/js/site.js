@@ -9,19 +9,12 @@ function getShortUrl() {
     
     var url = document.querySelector("#url-entry-input").value;
 
-    fetch(`https://localhost:5001/api/Url?url=${url}`, { method: "POST" })
-        .then(function (response) {
-            return response.text().then(function (text) {
-                
-                console.log(text);
-                
-                var input = document.querySelector("#url-shorten-input");
-
-                input.value = text;
-                
-                if(!text.includes("invalid"))
-                    document.querySelector("#btn-confirm-url").style.display = 'block';
-
-            })
+    fetch(`/api/Url?url=${url}`, { method: "POST" })
+        .then(async function (response) {
+            const text = await response.text();
+            let input = document.querySelector("#url-shorten-input");
+            input.value = text;
+            if (!text.includes("invalid"))
+                document.querySelector("#btn-confirm-url").style.display = 'block';
         });
 }
