@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace urlshorten.Models
 {
     public class UrlViewModel
     {
+        [Key]
         public int Id { get; set; }
 
         public string Title { get; set; }

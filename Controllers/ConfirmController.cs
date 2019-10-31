@@ -11,12 +11,20 @@ namespace urlshorten.Controllers
     public class ConfirmController : Controller
     {
         // GET: Confirm
-       
+
         public ActionResult Index()
         {
-            var Form = Request.Form;
-            
-            return View();
+            UrlViewModel uv = new UrlViewModel()
+            { 
+
+                Address = Request.Form["Address"],
+                ShortAddress = Request.Form["ShortAddress"],
+                UrlHash = int.Parse(Request.Form["UrlHash"]),
+                Created = DateTime.Now,
+             
+            };
+           
+            return View(uv);
         }
 
         // GET: Confirm/Details/5
