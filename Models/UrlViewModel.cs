@@ -18,9 +18,9 @@ namespace urlshorten.Models
 
         public string User { get; set; }
 
-        public Uri Address { get; set; }
+        public string Address { get; set; }
 
-        public Uri ShortAddress { get; set; }
+        public string ShortAddress { get; set; }
         
     }
 }
