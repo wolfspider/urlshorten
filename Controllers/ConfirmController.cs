@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using urlshorten.Models;
@@ -20,7 +17,7 @@ namespace urlshorten.Controllers
                 Address = Request.Form["Address"],
                 ShortAddress = Request.Form["ShortAddress"],
                 UrlHash = int.Parse(Request.Form["UrlHash"]),
-                Created = DateTime.Now,
+                Created = DateTime.Now
              
             };
            
