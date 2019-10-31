@@ -83,6 +83,7 @@ namespace urlshorten.Controllers
                 Uri uri = null;
 
                 //test to see if string is correct url
+                //!! Also need to check for dupe URLs
                 
                 if (!Uri.TryCreate(url, UriKind.Absolute, out uri) || null == uri)
                     return "invalid url (e.g. http://alachuacounty.us/Pages/AlachuaCounty)";
@@ -97,7 +98,7 @@ namespace urlshorten.Controllers
         }
 
         [HttpPost("{id}")]
-        public async Task<ActionResult<string>> Decode(string id)
+        public async Task<ActionResult<int>> Decode(string id)
         {
 
             return await Task.Run(() => {
@@ -110,12 +111,10 @@ namespace urlshorten.Controllers
 
                     //obviously, this part needs to be planned out more...
                     
-                    return "saved";
+                    return code;
                 }
 
-            });
-
-            
+            });            
         }
 
         // DELETE: api/Url/5

@@ -17,4 +17,11 @@ function getShortUrl() {
             if (!text.includes("invalid"))
                 document.querySelector("#btn-confirm-url").style.display = 'block';
         });
+
+    fetch(`/api/Url/${url.replace("https://","").replace("http://", "")}`, { method: "POST" })
+        .then(async function(response) {
+            const text = await response.text();
+            let hash = document.querySelector("#url-shorten-hash");
+            hash.value = text; 
+        });
 }

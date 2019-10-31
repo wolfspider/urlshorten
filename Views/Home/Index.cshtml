@@ -5,7 +5,7 @@
 <div class="text-center">
     <h5 class="display-4">Alachua County URL Shortener Service</h5>
 </div>
-<form action="">
+<form method="post" action="/Confirm">
     <div class="form-row">
         <div class="col-sm-10">
             <label for="url-entry" id="url-entry-label">Enter Url:</label>
@@ -25,7 +25,8 @@
             </div>
         </div>
         <div class="col-sm-10 btn-buffer">
-            <a href="#" id="btn-confirm-url" class="btn btn-primary" style="display:none">Confirm</a>
+            <button type="submit" id="btn-confirm-url" class="btn btn-primary"  style="display:none">Confirm</button>
         </div>
     </div>
+    <input type="hidden" id="url-shorten-hash" value="">
 </form>
