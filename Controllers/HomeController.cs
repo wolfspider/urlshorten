@@ -18,11 +18,14 @@ namespace urlshorten.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index(bool duplicate = false)
+        public IActionResult Index(bool duplicate = false, bool success = false)
         {
             
             if(duplicate is true)
                 ViewBag.Duplicate = true;
+            
+            if(success is true)
+                ViewBag.Success = true;
 
             return View();
         }

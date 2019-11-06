@@ -81,8 +81,7 @@ namespace urlshorten.Controllers
             try
             {
                 // TODO: Add update logic here
-
-                
+      
                     //perhaps index the records via URL hash for quick lookup in db
                     
                     if(!_context.UrlViewModels.Any(e => e.Id == uv.UrlHash))
@@ -102,11 +101,11 @@ namespace urlshorten.Controllers
                     }
                 
 
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index","Home", new { success = true });
             }
             catch(Exception ex)
             {
-                return View();
+                return RedirectToAction("Index","Home");
             }
         }
 
