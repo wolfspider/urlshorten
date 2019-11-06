@@ -18,6 +18,8 @@ function getShortUrl() {
                 document.querySelector("#btn-confirm-url").style.display = 'block';
         });
 
+    //We can possibly trim this on the backend and get URL Formatted correctly
+    
     fetch(`/api/Url/${url.replace("https://","").replace("http://", "")}`, { method: "POST" })
         .then(async function(response) {
             const text = await response.text();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using urlshorten.Models;
@@ -7,21 +8,34 @@ namespace urlshorten.Controllers
 {
     public class ConfirmController : Controller
     {
+        
+        private readonly URLShortenDBContext _context;
+
+        public ConfirmController(URLShortenDBContext context)
+        {
+            _context = context;
+        }
+        
         // GET: Confirm
 
         public ActionResult Index()
         {
-            UrlViewModel uv = new UrlViewModel()
-            { 
+            if(Request.Form.Any())
+            {
+                UrlViewModel uv = new UrlViewModel()
+                { 
 
-                Address = Request.Form["Address"],
-                ShortAddress = Request.Form["ShortAddress"],
-                UrlHash = int.Parse(Request.Form["UrlHash"]),
-                Created = DateTime.Now
-             
-            };
+                    Address = Request.Form["Address"],
+                    ShortAddress = Request.Form["ShortAddress"],
+                    UrlHash = int.Parse(Request.Form["UrlHash"]),
+                    Created = DateTime.Now
+                
+                };
+
+                return View(uv);
+            }
            
-            return View(uv);
+            return View();
         }
 
         // GET: Confirm/Details/5
@@ -62,15 +76,35 @@ namespace urlshorten.Controllers
         // POST: Confirm/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(UrlViewModel uv)
         {
             try
             {
                 // TODO: Add update logic here
 
-                return RedirectToAction(nameof(Index));
+                
+                    //perhaps index the records via URL hash for quick lookup in db
+                    
+                    if(!_context.UrlViewModels.Any(e => e.Id == uv.UrlHash))
+                    {
+                        uv.Id = uv.UrlHash;
+
+                        uv.User = "DriveBy";
+
+                        uv.Title = "InitialSave";
+
+                        _context.Add(uv);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index","Home", new { duplicate = true });
+                    }
+                
+
+                return RedirectToAction("Index","Home");
             }
-            catch
+            catch(Exception ex)
             {
                 return View();
             }

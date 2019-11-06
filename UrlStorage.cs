@@ -8,6 +8,7 @@ namespace urlshorten
 {
     public class URLShortenDBContext : DbContext
     {
+        
         public URLShortenDBContext(DbContextOptions<URLShortenDBContext> options)
             :base(options)
         {

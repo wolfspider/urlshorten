@@ -81,7 +81,7 @@ namespace urlshorten.Controllers
             {
 
                 //test to see if string is correct url
-                //!! Also need to check for dupe URLs
+                
 
                 if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri) || null == uri)
                     return "invalid url (e.g. http://alachuacounty.us/Pages/AlachuaCounty)";

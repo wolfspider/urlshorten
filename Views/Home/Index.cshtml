@@ -7,6 +7,12 @@
 <div class="text-center">
     <h5 class="display-4">Alachua County URL Shortener Service</h5>
 </div>
+@{
+    if(ViewBag.Duplicate == true)
+    {
+        @:<div class="row"><h2>Duplicate URL Found! Please try another.</h2></div>
+    }
+}
 <form method="post" action="/Confirm">
     <div class="form-row">
         <div class="col-sm-10">
