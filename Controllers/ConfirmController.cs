@@ -92,6 +92,12 @@ namespace urlshorten.Controllers
 
                         uv.Title = "InitialSave";
 
+                        //active is for disabling these if insecure..
+                        
+                        uv.Active = true;
+
+                        uv.Modified = DateTime.Now;
+
                         _context.Add(uv);
                         _context.SaveChanges();
                     }
@@ -105,6 +111,7 @@ namespace urlshorten.Controllers
             }
             catch(Exception ex)
             {
+                //Console.WriteLine(ex.ToString());
                 return RedirectToAction("Index","Home");
             }
         }
