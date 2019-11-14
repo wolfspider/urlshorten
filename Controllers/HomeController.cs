@@ -11,11 +11,29 @@ namespace urlshorten.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly URLShortenDBContext _context;
+
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, URLShortenDBContext context)
         {
             _logger = logger;
+            _context = context;
+        }
+
+        // GET: Index/aBcDeF
+        [HttpGet("{urlhash}")]
+        public IActionResult Index(string urlhash)
+        {  
+            //match the URL hash with an index
+            var url = _context.UrlViewModels.Where(x => x.ShortAddress.Contains(urlhash)).SingleOrDefault();
+
+            if (url == null)
+            {
+                return NotFound();
+            }
+
+            return Redirect(url.Address);
         }
 
         public IActionResult Index(bool duplicate = false, bool success = false)
