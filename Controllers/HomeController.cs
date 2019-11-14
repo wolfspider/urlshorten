@@ -23,10 +23,11 @@ namespace urlshorten.Controllers
 
         // GET: Index/aBcDeF
         [HttpGet("{urlhash}")]
+        [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
         public IActionResult Index(string urlhash)
         {  
             //match the URL hash with an index
-            var url = _context.UrlViewModels.Where(x => x.ShortAddress.Contains(urlhash)).SingleOrDefault();
+            var url = _context.UrlViewModels.Where(x => x.ShortAddress == urlhash).SingleOrDefault();
 
             if (url == null)
             {

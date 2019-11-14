@@ -98,6 +98,10 @@ namespace urlshorten.Controllers
 
                         uv.Modified = DateTime.Now;
 
+                        //Full URL is just there for display but we only want the code in DB    
+
+                        uv.ShortAddress = uv.ShortAddress.Replace("https://url.acbocc.us/", "");
+
                         _context.Add(uv);
                         _context.SaveChanges();
                     }

@@ -25,7 +25,7 @@ namespace urlshorten
                         Id = 1,
                         Active = true,
                         Address = "https://alachuacounty.us",
-                        ShortAddress = "https://url.acbocc.us/#/da5",
+                        ShortAddress = "8q6pR",
                         UrlHash = 12345,
                         Created = DateTime.Now,
                         Title = "Alachua County",
