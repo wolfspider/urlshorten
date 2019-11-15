@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using urlshorten.Models;
 
@@ -15,12 +16,17 @@ namespace urlshorten.Controllers
 
         private readonly ILogger<HomeController> _logger;
 
+        private readonly static IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
+
+        private readonly UrlCache _urlcache;
+
         public HomeController(ILogger<HomeController> logger, URLShortenDBContext context)
         {
             _logger = logger;
             _context = context;
+            _urlcache = new UrlCache(_cache, _context);
         }
-
+   
         // GET: Index/aBcDeF
         [HttpGet("{urlhash}")]
         [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]

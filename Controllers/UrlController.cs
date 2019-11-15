@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using urlshorten.Models;
 
 namespace urlshorten.Controllers
@@ -14,8 +15,11 @@ namespace urlshorten.Controllers
     {
         private readonly URLShortenDBContext _context;
 
-        public UrlController(URLShortenDBContext context)
+        private readonly ILogger<UrlController> _logger;
+
+        public UrlController(ILogger<UrlController> logger, URLShortenDBContext context)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -76,6 +80,7 @@ namespace urlshorten.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> Shorten(string url)
         {
+            _logger.LogInformation("Url shortened from original " + url);
                   
             return "https://url.acbocc.us/" + await Task.Run(() =>
             {
