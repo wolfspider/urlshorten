@@ -18,13 +18,13 @@ namespace urlshorten.Controllers
 
         private readonly static IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
 
-        private readonly UrlCache _urlcache;
+        private readonly UrlCache<string> _urlcache;
 
         public HomeController(ILogger<HomeController> logger, URLShortenDBContext context)
         {
             _logger = logger;
             _context = context;
-            _urlcache = new UrlCache(_cache, _context);
+            _urlcache = new UrlCache<string>(_cache, _context);
         }
    
         // GET: Index/aBcDeF

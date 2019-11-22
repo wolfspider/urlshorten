@@ -3,14 +3,15 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace urlshorten
 {
-    public class UrlCache
+    public class UrlCache<TItem>
     {
         private static ConcurrentDictionary<string, string> _lookup;
-
+        private static ConcurrentDictionary<object, SemaphoreSlim> _spinlock = new ConcurrentDictionary<object, SemaphoreSlim>();
         private static IMemoryCache _cache;
 
         private readonly URLShortenDBContext _context;
@@ -19,28 +20,37 @@ namespace urlshorten
         {     
             //constructor should init cache and set it
             
-            _lookup = new ConcurrentDictionary<string, string>();
             _cache = memcache;
             _context = context;
+            _lookup = new ConcurrentDictionary<string, string>(_context.UrlViewModels.ToDictionary(d => d.ShortAddress, d => d.Address));
 
-            DateTime cachedTime = DateTime.Now;
+            Parallel.ForEach( _lookup, (url) => { _cache.Set(url.Key, url.Value); });
+      
+        }
 
-            // Set cache options.
-            var cacheEntryOptions = new MemoryCacheEntryOptions()
-                // Keep in cache for this time, reset time if accessed.
-                .SetSlidingExpiration(TimeSpan.FromMinutes(30));
-
-            //lets go ahead and pull it out of in-mem DB for parallel ops
-            
-            var urlstore = _context.UrlViewModels.ToList();
-
-            Parallel.ForEach(urlstore, (url) =>
+        public async Task<TItem> GetOrCreate(object key, Func<Task<TItem>> createItem)
+        {
+            //check if the item is cached or not and wait on semaphore if blocking...
+            if (!_cache.TryGetValue(key, out TItem cacheEntry))// Look for cache key.
             {
-                _lookup.TryAdd(url.ShortAddress, url.Address);
-            });
-            
-            _cache.Set(_lookup, cachedTime, cacheEntryOptions);
+                SemaphoreSlim mylock = _spinlock.GetOrAdd(key, k => new SemaphoreSlim(1, 1));
 
+                await mylock.WaitAsync();
+                try
+                {
+                    if (!_cache.TryGetValue(key, out cacheEntry))
+                    {
+                        // Key not in cache, so get data.
+                        cacheEntry = await createItem();
+                        _cache.Set(key, cacheEntry);
+                    }
+                }
+                finally
+                {
+                    mylock.Release();
+                }
+            }
+            return cacheEntry;
         }
 
     }
