@@ -25,6 +25,7 @@ namespace urlshorten
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<URLShortenDBContext>(options => options.UseInMemoryDatabase(databaseName: "UrlShorten"));
+            services.AddSingleton<IUrlCache<string>, UrlCache<string>>();
             services.AddControllersWithViews();
         }
 

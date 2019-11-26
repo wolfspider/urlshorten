@@ -20,8 +20,10 @@ namespace urlshorten
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<URLShortenDBContext>();
-
+               
                 UrlDataGen.Init(services);
+
+                new UrlCache<string>(services);
             }
 
             host.Run();
