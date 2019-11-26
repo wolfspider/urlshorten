@@ -87,14 +87,16 @@ namespace urlshorten.Controllers
 
                 //test to see if string is correct url
                 
-
                 if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri) || null == uri)
                     return "invalid url (e.g. http://alachuacounty.us/Pages/AlachuaCounty)";
 
+                //TODO: fragment at end causes forward slash at end must be removed
+                 
+                
                 url = uri.Host + uri.PathAndQuery + uri.Fragment;
 
                 using UrlShorten _urlShorten = new UrlShorten(url);
-                    return _urlShorten.ShortenedUrl;
+                return _urlShorten.ShortenedUrl;
          
             });
 
@@ -103,19 +105,16 @@ namespace urlshorten.Controllers
         [HttpPost("{id}")]
         public async Task<ActionResult<int>> Decode(string id)
         {
+            //TODO: need to parse all the slashes in the url which means this needs to be parameter!
 
             return await Task.Run(() => {
 
-                using (UrlShorten _urlShorten = new UrlShorten())
-                {
-                    var code = _urlShorten.Decode(id);
+                using UrlShorten _urlShorten = new UrlShorten();
+                return _urlShorten.Decode(id);
 
-                    //Save the code here for shortened URL into one of the UrlView ents
+                //Save the code here for shortened URL into one of the UrlView ents
 
-                    //obviously, this part needs to be planned out more...
-                    
-                    return code;
-                }
+                //obviously, this part needs to be planned out more...
 
             });            
         }
