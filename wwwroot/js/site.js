@@ -4,26 +4,58 @@
 // Write your JavaScript code.
 
 
-function getShortUrl() {
-//response text needs to be specified here for return type
-    
-    var url = document.querySelector("#url-entry-input").value;
+function normalizeUrl(url) {
 
-    fetch(`/api/Url?url=${url}`, { method: "POST" })
+    //Use Url-Knife in order to match via fuzzy pattern
+
+    var normUrl = Pattern.UrlArea.normalizeUrl(url);
+
+    console.log(normUrl);
+
+    if (!!normUrl.normalizedUrl) {
+        console.log("Got Normalized URL " + normUrl.normalizedUrl);
+        return normUrl;
+    }
+    else {
+        console.log("Normalized URL is null!");
+        return url;
+    }
+
+}
+
+function getShortUrl() {
+    //response text needs to be specified here for return type
+
+    const redirHost = "https://url.acbocc.us/";
+
+    var url = document.querySelector("#url-entry-input").value;
+    //var url = document.getElementById("url-entry-input").value;
+
+    url = normalizeUrl(url);
+
+    fetch(`/api/Url`, {
+        method: "POST", body: JSON.stringify(url),
+        headers: {
+            'Accept': 'application/json, text/plain',
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
+    })
         .then(async function (response) {
             const text = await response.text();
+
             let input = document.querySelector("#url-shorten-input");
-            input.value = text;
+            input.value = text.replace(/\\([\s\S])|(")/g, "");
+
             if (!text.includes("invalid"))
                 document.querySelector("#btn-confirm-url").style.display = 'block';
-        });
 
-    //We can possibly trim this on the backend and get URL Formatted correctly
-    
-    fetch(`/api/Url/${url.replace("https://","").replace("http://", "")}`, { method: "POST" })
-        .then(async function(response) {
+            return fetch(`/api/Url/${text.replace(/\\([\s\S])|(")/g, "").replace(redirHost, "")}`, { method: "POST" })
+        })
+        .then(async function (response) {
             const text = await response.text();
             let hash = document.querySelector("#url-shorten-hash");
-            hash.value = text; 
+            hash.value = text;
         });
 }
+
+

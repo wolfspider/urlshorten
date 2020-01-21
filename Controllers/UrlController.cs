@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using urlshorten.Models;
 
 namespace urlshorten.Controllers
@@ -16,6 +19,27 @@ namespace urlshorten.Controllers
         private readonly URLShortenDBContext _context;
 
         private readonly ILogger<UrlController> _logger;
+
+        public class UrlKnife
+        {
+            public string url {get; set;}
+            public string normalizedUrl {get; set;}
+            public string removedTailOnUrl {get; set;}
+            public string protocol {get; set;}
+            public string onlyDomain {get; set;}
+            public string onlyParams {get; set;}
+            public string onlyUri {get; set;}
+            public string onlyUriWithParams {get; set;}
+            public Dictionary<string, string> onlyParamsJsn {get; set;}
+            public string type {get; set;}
+            public string port {get; set;}
+
+        }
+
+        class UrlCollection
+        {
+
+        }
 
         public UrlController(ILogger<UrlController> logger, URLShortenDBContext context)
         {
@@ -78,22 +102,28 @@ namespace urlshorten.Controllers
 
         // POST: api/Url
         [HttpPost]
-        public async Task<ActionResult<string>> Shorten(string url)
+        public async Task<ActionResult<string>> Shorten([FromBody] dynamic kurl)
         {
-            _logger.LogInformation("Url shortened from original " + url);
+            //_logger.LogInformation("Url shortened from original " + url);
                   
             return "https://url.acbocc.us/" + await Task.Run(() =>
             {
 
-                //test to see if string is correct url
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
+       
+                //create a URL knife object
+                var knife = JsonSerializer.Deserialize<UrlKnife>(kurl.ToString(), options);
                 
-                if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri) || null == uri)
+                if (!Uri.TryCreate(knife.normalizedUrl, UriKind.Absolute, out Uri uri) || null == uri)
                     return "invalid url (e.g. http://alachuacounty.us/Pages/AlachuaCounty)";
 
                 //TODO: fragment at end causes forward slash at end must be removed
-                 
-                
-                url = uri.Host + uri.PathAndQuery + uri.Fragment;
+                                
+                var url = uri.Host + uri.PathAndQuery + uri.Fragment;
 
                 using UrlShorten _urlShorten = new UrlShorten(url);
                 return _urlShorten.ShortenedUrl;
