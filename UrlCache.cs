@@ -18,9 +18,8 @@ namespace urlshorten
 
     public class UrlCache<TItem> : IUrlCache<TItem>
     {
-        private static readonly ConcurrentDictionary<object, SemaphoreSlim> _spinlock = new ConcurrentDictionary<object, SemaphoreSlim>();
         private static IMemoryCache _cache;
-
+        
         public UrlCache(IServiceProvider svc)
         {
             if (_cache == null)
@@ -40,46 +39,16 @@ namespace urlshorten
 
         public async Task<string> GetOrCreate(string key, URLShortenDBContext context)
         {
-            //check if the item is cached or not and wait on semaphore if blocking...
-            /*
-            if (!_cache.TryGetValue(key, out string cacheEntry))// Look for cache key.
-            {
-                SemaphoreSlim mylock = _spinlock.GetOrAdd(key, k => new SemaphoreSlim(1, 1));
+            
+            var _channel = Channel.CreateUnbounded<string>();
+            var _crequest = new CacheRequest(_channel.Writer, 1, 0);
+            var _cset = new CacheSet(_channel.Reader, 1, 0);
 
-                await mylock.WaitAsync();
-                try
-                {
-                    if (!_cache.TryGetValue(key, out cacheEntry))
-                    {
-                        // Key not in cache, so get data.
-                        cacheEntry = context.UrlViewModels.Where(x => x.ShortAddress == key).FirstOrDefault().Address;
-                        _cache.Set(key, cacheEntry);
-                    }
-                }
-                finally
-                {
-                    mylock.Release();
-                }
-            }
-            return cacheEntry;
-            */
-
-            var channel = Channel.CreateUnbounded<string>();
-
-            var request1 = new CacheRequest(channel.Writer, 1, 0);
-            var response1 = new CacheSet(channel.Reader, 1, 0);
-            //var response2 = new CacheSet(channel.Reader, 2, 0);
-            //var response3 = new CacheSet(channel.Reader, 3, 0);
-
-            Task cacheTask1 = response1.GetOrCreate(context);  
-            //Task cacheTask2 = response2.GetOrCreate(context);
-            //Task cacheTask3 = response3.GetOrCreate(context);
-
-            Task cacheRequest = request1.GetCache(key);
-
-            await cacheRequest.ContinueWith(_ => channel.Writer.Complete());  
-
-            return await response1.GetOrCreate(context);
+            var hash = await _crequest.GetCache(key)
+            .ContinueWith(_ => _channel.Writer.Complete())
+            .ContinueWith(_ => _cset.GetOrCreate(context));
+            
+            return await hash;
         }
 
         internal class CacheRequest
@@ -142,7 +111,7 @@ namespace urlshorten
                     }
 
                 }
-
+                //TODO: Think of something better than this
                 return "error";
                 
             }
