@@ -34,8 +34,6 @@ namespace urlshorten.Controllers
             //match the URL hash with an index
             var url = await _cache.GetOrCreate(urlhash, _context);
 
-            //var url = await _context.UrlViewModels.Where(x => x.ShortAddress == urlhash).FirstOrDefaultAsync();
-
             if (url == null)
             {
                 return NotFound();
