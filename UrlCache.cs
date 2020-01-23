@@ -44,11 +44,11 @@ namespace urlshorten
             var _crequest = new CacheRequest(_channel.Writer, 1, 0);
             var _cset = new CacheSet(_channel.Reader, 1, 0);
 
-            var hash = await _crequest.GetCache(key)
+            var address = await _crequest.GetCache(key)
             .ContinueWith(_ => _channel.Writer.Complete())
             .ContinueWith(_ => _cset.GetOrCreate(context));
             
-            return await hash;
+            return await address;
         }
 
         internal class CacheRequest
