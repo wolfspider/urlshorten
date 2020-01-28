@@ -36,11 +36,6 @@ namespace urlshorten.Controllers
 
         }
 
-        class UrlCollection
-        {
-
-        }
-
         public UrlController(ILogger<UrlController> logger, URLShortenDBContext context)
         {
             _logger = logger;

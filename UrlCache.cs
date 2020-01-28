@@ -100,6 +100,7 @@ namespace urlshorten
                         
                         if (!_cache.TryGetValue(key, out string cacheEntry))// Look for cache key.
                         {
+                            
                             // Key not in cache, so get data.
                             cacheEntry = context.UrlViewModels.Where(x => x.ShortAddress == key).FirstOrDefault().Address;
                             _cache.Set(key, cacheEntry);

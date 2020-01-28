@@ -111,7 +111,7 @@ namespace urlshorten.Controllers
                     }
                 
 
-                return RedirectToAction("Index","Home", new { success = true });
+                return RedirectToAction("Index","Home", new { success = true, redir = uv.ShortAddress });
             }
             catch(Exception ex)
             {

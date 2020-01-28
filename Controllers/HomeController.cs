@@ -42,7 +42,7 @@ namespace urlshorten.Controllers
             return Redirect(url);
         }
 
-        public IActionResult Index(bool duplicate = false, bool success = false)
+        public IActionResult Index(bool duplicate = false, bool success = false, string redir = "")
         {
             
             if(duplicate is true)
@@ -50,6 +50,7 @@ namespace urlshorten.Controllers
             
             if(success is true)
                 ViewBag.Success = true;
+                ViewBag.Redirect = redir;
 
             return View();
         }
