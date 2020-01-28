@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace urlshorten
 {
-
     public interface IUrlCache<TItem>
     {
         Task<string> GetOrCreate(string key, URLShortenDBContext context);
@@ -19,7 +18,7 @@ namespace urlshorten
     public class UrlCache<TItem> : IUrlCache<TItem>
     {
         private static IMemoryCache _cache;
-        
+
         public UrlCache(IServiceProvider svc)
         {
             if (_cache == null)
@@ -40,13 +39,20 @@ namespace urlshorten
         public async Task<string> GetOrCreate(string key, URLShortenDBContext context)
         {
             
-            var _channel = Channel.CreateUnbounded<string>();
-            var _crequest = new CacheRequest(_channel.Writer, 1, 0);
-            var _cset = new CacheSet(_channel.Reader, 1, 0);
+            var _channel = Channel.CreateUnbounded<string>(new UnboundedChannelOptions() {
+                    SingleWriter = true,
+                    SingleReader = false
+            });
 
-            var address = await _crequest.GetCache(key)
-            .ContinueWith(_ => _channel.Writer.Complete())
-            .ContinueWith(_ => _cset.GetOrCreate(context));
+            var _crequest = new CacheRequest(_channel.Writer, 1);
+            var _cset = new CacheSet(_channel.Reader, 1);
+            var _cset2 = new CacheSet(_channel.Reader, 2);
+            var _cset3 = new CacheSet(_channel.Reader, 3);
+
+            await _crequest.GetCache(key)
+            .ContinueWith(_ => _channel.Writer.Complete());
+          
+            var address = await Task.WhenAny(_cset.GetOrCreate(context), _cset2.GetOrCreate(context), _cset3.GetOrCreate(context));
             
             return await address;
         }
@@ -55,38 +61,33 @@ namespace urlshorten
         {
             private readonly ChannelWriter<string> _cache_req;
             private readonly int _cache_id;
-            private readonly int _cache_delay;
-
-            public CacheRequest(ChannelWriter<string> cache_req, int cache_id, int cache_delay)
+            
+            public CacheRequest(ChannelWriter<string> cache_req, int cache_id)
             {
                 _cache_req = cache_req;
                 _cache_id = cache_id;
-                _cache_delay = cache_delay;
             }
 
             public async Task GetCache(string key)
             {
-
-                await Task.Delay(_cache_delay);
-
-                await _cache_req.WriteAsync(key);
-
+           
+                while (await _cache_req.WaitToWriteAsync())
+                {
+                    if( _cache_req.TryWrite(key)) break;                             
+                }
+                        
             }
         }
 
         internal class CacheSet
         {
             private readonly ChannelReader<string> _cache_req;
-
             private readonly int _cache_id;
 
-            private readonly int _cache_delay;
-
-            public CacheSet(ChannelReader<string> cache_req, int cache_id, int cache_delay)
+            public CacheSet(ChannelReader<string> cache_req, int cache_id)
             {
                 _cache_req = cache_req;
                 _cache_id = cache_id;
-                _cache_delay = cache_delay;
             }
 
             public async Task<string> GetOrCreate(URLShortenDBContext context)
@@ -94,17 +95,14 @@ namespace urlshorten
                 
                 while (await _cache_req.WaitToReadAsync())
                 {
-                    if (_cache_req.TryRead(out var key))
+                    while (_cache_req.TryRead(out var key))
                     {
-                        await Task.Delay(_cache_delay);
-
+                        
                         if (!_cache.TryGetValue(key, out string cacheEntry))// Look for cache key.
                         {
-
                             // Key not in cache, so get data.
                             cacheEntry = context.UrlViewModels.Where(x => x.ShortAddress == key).FirstOrDefault().Address;
                             _cache.Set(key, cacheEntry);
-
                         }
 
                         return cacheEntry;

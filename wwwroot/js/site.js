@@ -29,8 +29,7 @@ function getShortUrl() {
     const redirHost = "https://url.acbocc.us/";
 
     var url = document.querySelector("#url-entry-input").value;
-    //var url = document.getElementById("url-entry-input").value;
-
+    
     url = normalizeUrl(url);
 
     fetch(`/api/Url`, {
