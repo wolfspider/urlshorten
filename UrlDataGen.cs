@@ -22,7 +22,6 @@ namespace urlshorten
 
                     new Models.UrlViewModel
                     {
-                        Id = 1,
                         Active = true,
                         Address = "https://alachuacounty.us",
                         ShortAddress = "8q6pR",

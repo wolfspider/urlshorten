@@ -86,7 +86,7 @@ namespace urlshorten.Controllers
                     
                     if(!_context.UrlViewModels.Any(e => e.Id == uv.UrlHash))
                     {
-                        uv.Id = uv.UrlHash;
+                        //uv.Id = uv.UrlHash;
 
                         uv.User = "DriveBy";
 

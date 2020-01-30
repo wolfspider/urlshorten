@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using urlshorten.Extensions;
 
 namespace urlshorten
 {
@@ -24,7 +25,8 @@ namespace urlshorten
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<URLShortenDBContext>(options => options.UseInMemoryDatabase(databaseName: "UrlShorten"));
+            services.ConfigureMSSqlContext(Configuration);
+            //services.AddDbContext<URLShortenDBContext>(options => options.UseInMemoryDatabase(databaseName: "UrlShorten"));
             services.AddSingleton<IUrlCache<string>, UrlCache<string>>();
             services.AddControllersWithViews();
         }
