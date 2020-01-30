@@ -22,7 +22,8 @@ namespace urlshorten
                 var context = services.GetRequiredService<URLShortenDBContext>();
                
                 UrlDataGen.Init(services);
-
+                
+                //This will prime the cache with DB entries
                 new UrlCache<string>(services);
             }
 
