@@ -24,12 +24,9 @@ namespace urlshorten.Controllers
             {
                 UrlViewModel uv = new UrlViewModel()
                 { 
-
                     Address = Request.Form["Address"],
                     ShortAddress = Request.Form["ShortAddress"],
-                    UrlHash = int.Parse(Request.Form["UrlHash"]),
-                    Created = DateTime.Now
-                
+                    UrlHash = int.Parse(Request.Form["UrlHash"])                  
                 };
 
                 return View(uv);

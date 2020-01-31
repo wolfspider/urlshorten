@@ -12,6 +12,13 @@ namespace urlshorten.Extensions
             var connectionString = config["mssqlconnection:connectionString"];
             services.AddDbContext<URLShortenDBContext>(i => i.UseSqlServer(connectionString));
         }
+
+        public static void ConfigureIISIntegration(this IServiceCollection services)
+        {
+            services.Configure<IISOptions>(options => {
+                //options go here
+            });
+        }
     }
 
 }

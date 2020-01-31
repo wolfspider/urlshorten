@@ -25,8 +25,8 @@ namespace urlshorten
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.ConfigureIISIntegration();
             services.ConfigureMSSqlContext(Configuration);
-            //services.AddDbContext<URLShortenDBContext>(options => options.UseInMemoryDatabase(databaseName: "UrlShorten"));
             services.AddSingleton<IUrlCache<string>, UrlCache<string>>();
             services.AddControllersWithViews();
         }

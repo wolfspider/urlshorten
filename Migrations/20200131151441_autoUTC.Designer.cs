@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using urlshorten;
 
 namespace urlshorten.Migrations
 {
     [DbContext(typeof(URLShortenDBContext))]
-    partial class URLShortenDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200131151441_autoUTC")]
+    partial class autoUTC
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
