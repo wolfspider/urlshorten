@@ -81,7 +81,7 @@ namespace urlshorten.Controllers
       
                     //perhaps index the records via URL hash for quick lookup in db
                     
-                    if(!_context.UrlViewModels.Any(e => e.Id == uv.UrlHash))
+                    if(!_context.UrlViewModels.Any(e => e.UrlHash == uv.UrlHash))
                     {
                         //uv.Id = uv.UrlHash;
 

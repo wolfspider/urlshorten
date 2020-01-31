@@ -19,6 +19,14 @@ namespace urlshorten.Extensions
                 //options go here
             });
         }
+
+        //Not implemented yet
+        
+        //public static void ConfigureADFSValidation(this IServiceCollection services, IConfiguration config)
+        //{
+        //    var ADFSX509Auth = config["ADFSThumbprint:x509Cert"];
+
+        //}
     }
 
 }

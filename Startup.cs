@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +30,36 @@ namespace urlshorten
             services.ConfigureMSSqlContext(Configuration);
             services.AddSingleton<IUrlCache<string>, UrlCache<string>>();
             services.AddControllersWithViews();
+
+            //ADFS config for auth
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddWsFederation(options =>
+            {
+                options.Wtrealm = "urn:sharepoint:velosimo";
+                options.MetadataAddress = "https://adfs.alachuacounty.us/federationmetadata/2007-06/federationmetadata.xml";
+                options.Wreply = "https://intranet.acbocc.us/_trust/default.aspx";
+
+                options.CallbackPath = "/_trust";
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = "https://adfs.alachuacounty.us/adfs/services/trust"
+                };
+                options.CorrelationCookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
+            })
+            .AddCookie(cookieOptions =>
+            {
+                cookieOptions.Cookie.Name = "FedAuth";
+                cookieOptions.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
+                cookieOptions.Cookie.HttpOnly = true;
+                cookieOptions.LoginPath = "/Home";
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
