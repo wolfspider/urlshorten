@@ -27,9 +27,16 @@ namespace urlshorten
                 _cache = new MemoryCache(new MemoryCacheOptions());
 
                 //constructor should init cache and set it
+                
                 using (var context = new URLShortenDBContext(svc.GetRequiredService<DbContextOptions<URLShortenDBContext>>()))
                 {
-                    context.UrlViewModels.ForEachAsync(c => _cache.Set(c.ShortAddress, c.Address));
+                    var cacheEntries = context.UrlViewModels.Select(c => new { c.ShortAddress, c.Address }).ToList();
+
+                    foreach(var entry in cacheEntries)
+                    {
+                        _cache.Set(entry.ShortAddress, entry.Address);
+                    }
+                    
                 }
 
             }
