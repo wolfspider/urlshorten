@@ -19,8 +19,6 @@ namespace urlshorten
     {
         private static IMemoryCache _cache;
 
-        private static String Address;
-
         public UrlCache(IServiceProvider svc)
         {
             if (_cache == null)
