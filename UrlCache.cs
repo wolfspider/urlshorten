@@ -19,6 +19,8 @@ namespace urlshorten
     {
         private static IMemoryCache _cache;
 
+        private static String Address;
+
         public UrlCache(IServiceProvider svc)
         {
             if (_cache == null)
@@ -109,8 +111,13 @@ namespace urlshorten
                         {
                             
                             // Key not in cache, so get data.
-                            cacheEntry = context.UrlViewModels.Where(x => x.ShortAddress == key).FirstOrDefault().Address;
+                            //TODO: Handle null values way more elegantly
+                            cacheEntry = context.UrlViewModels
+                            .Where(x => x.ShortAddress == key)
+                            .FirstOrDefault().Address;
+                            
                             _cache.Set(key, cacheEntry);
+                           
                         }
 
                         return cacheEntry;

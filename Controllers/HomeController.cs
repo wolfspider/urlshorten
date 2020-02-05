@@ -35,14 +35,17 @@ namespace urlshorten.Controllers
         public async Task<IActionResult> Index(string urlhash)
         {
             //match the URL hash with an index
-            var url = await _cache.GetOrCreate(urlhash, _context);
-
-            if (url == null)
+            try
+            {       
+                var url = await _cache.GetOrCreate(urlhash, _context);
+                return Redirect(url);
+            }
+            catch(Exception ex)
             {
+                _logger.LogInformation("Redirect Error: "+ex.ToString());
                 return NotFound();
             }
-
-            return Redirect(url);
+                
         }
 
         public IActionResult Index(bool duplicate = false, bool success = false, string redir = "")
