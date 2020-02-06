@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using urlshorten.Models;
 
 namespace urlshorten
 {
@@ -30,7 +31,8 @@ namespace urlshorten
                 
                 using (var context = new URLShortenDBContext(svc.GetRequiredService<DbContextOptions<URLShortenDBContext>>()))
                 {
-                    var cacheEntries = context.UrlViewModels.Select(c => new { c.ShortAddress, c.Address }).ToList();
+                    var cacheEntries = context.UrlViewModels
+                    .Select(c => new { c.ShortAddress, c.Address }).ToList();
 
                     foreach(var entry in cacheEntries)
                     {
@@ -110,11 +112,14 @@ namespace urlshorten
                             
                             // Key not in cache, so get data.
                             //TODO: Handle null values way more elegantly
-                            cacheEntry = context.UrlViewModels
-                            .Where(x => x.ShortAddress == key)
-                            .FirstOrDefault().Address;
+                            var urlViewModel = await context?.UrlViewModels?
+                            .Where(x => x.ShortAddress == key)?
+                            .FirstOrDefaultAsync();
                             
-                            _cache.Set(key, cacheEntry);
+                            cacheEntry = urlViewModel?.Address ?? "not found";
+                            
+                            if(cacheEntry != "not found")
+                                _cache.Set(key, cacheEntry);
                            
                         }
 

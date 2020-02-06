@@ -38,6 +38,10 @@ namespace urlshorten.Controllers
             try
             {       
                 var url = await _cache.GetOrCreate(urlhash, _context);
+
+                if(url == "not found" || url == "error")
+                    return NotFound();
+
                 return Redirect(url);
             }
             catch(Exception ex)
