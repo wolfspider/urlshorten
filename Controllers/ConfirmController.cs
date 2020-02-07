@@ -24,6 +24,7 @@ namespace urlshorten.Controllers
             {
                 UrlViewModel uv = new UrlViewModel()
                 { 
+                    Title = Request.Form["Title"],
                     Address = Request.Form["Address"],
                     ShortAddress = Request.Form["ShortAddress"],
                     UrlHash = int.Parse(Request.Form["UrlHash"])                  
@@ -83,11 +84,10 @@ namespace urlshorten.Controllers
                     
                     if(!_context.UrlViewModels.Any(e => e.UrlHash == uv.UrlHash))
                     {
-                        //uv.Id = uv.UrlHash;
-
+                        
                         uv.User = "DriveBy";
 
-                        uv.Title = "InitialSave";
+                        uv.Title = uv.Title;
 
                         //active is for disabling these if insecure..
                         

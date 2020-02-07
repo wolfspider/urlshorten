@@ -13,7 +13,7 @@ using urlshorten.Models;
 
 namespace urlshorten.Controllers
 {
-    
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly URLShortenDBContext _context;

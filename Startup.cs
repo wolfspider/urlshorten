@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using urlshorten.Extensions;
+
 
 namespace urlshorten
 {
@@ -36,14 +38,14 @@ namespace urlshorten
             {
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
             })
             .AddWsFederation(options =>
             {
                 options.Wtrealm = "urn:sharepoint:velosimo";
                 options.MetadataAddress = "https://adfs.alachuacounty.us/federationmetadata/2007-06/federationmetadata.xml";
-                options.Wreply = "https://intranet.acbocc.us/_trust/default.aspx";
-
+                //options.Wreply = "https://intranet.acbocc.us/_trust/default.aspx";
+                
                 options.CallbackPath = "/_trust";
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
@@ -51,14 +53,23 @@ namespace urlshorten
                     ValidIssuer = "https://adfs.alachuacounty.us/adfs/services/trust"
                 };
                 options.CorrelationCookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
+
+
             })
-            .AddCookie(cookieOptions =>
-            {
+            .AddCookie(cookieOptions => {
+                
                 cookieOptions.Cookie.Name = "FedAuth";
                 cookieOptions.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
                 cookieOptions.Cookie.HttpOnly = true;
                 cookieOptions.LoginPath = "/Home";
 
+            });
+
+            //services.AddAuthentication();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("User", policy =>
+                policy.RequireClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims", "Name"));
             });
         }
 
@@ -78,14 +89,17 @@ namespace urlshorten
             }
 
             app.UseBrowserLink();
-
+            app.UseCookiePolicy();
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
+            
+
+            //app.UseADFS();
 
             app.UseEndpoints(endpoints =>
             {

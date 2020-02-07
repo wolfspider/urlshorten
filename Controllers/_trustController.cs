@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography.Xml;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace urlshorten.Controllers
 {
@@ -16,14 +21,14 @@ namespace urlshorten.Controllers
 
             if (wresult != "" || wa != "")
             {
-                //Current cert is save somewhere else ;)
-                if (ValidateToken(wresult, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", out String user))
+                
+                if (ValidateToken(wresult, "0CA2238D11AED5F1BB169FC1238340942D52C565", out String user))
                 {
-                    var email = user;
+                    //var email = user;
 
-                    ViewBag.email = email;
+                    //ViewBag.email = email;
 
-                    return View();
+                    return RedirectToPage("/Home");
                 }
 
             }
@@ -120,6 +125,8 @@ namespace urlshorten.Controllers
 
             if (DateTime.Now > expireDate) return false; // token too old
 
+            var claims = new List<Claim>();
+            
             // claims
             var claimNodes =
               xd.SelectNodes("//t:RequestSecurityTokenResponse/t:RequestedSecurityToken/" +
@@ -134,6 +141,66 @@ namespace urlshorten.Controllers
                     )
                 {
                     userName = claimNode.ChildNodes[0].InnerText;
+                    var groups = claimNodes[1].ChildNodes;
+
+                    StringBuilder adGroup = new StringBuilder();
+
+                    foreach(XmlNode group in groups)
+                    {
+                        adGroup.Append(group.InnerText+",");
+                    }
+
+                    var adGroups = adGroup.ToString().TrimEnd(',');
+                    
+                    claims.Add(new Claim("Name", userName));
+                    claims.Add(new Claim("Group", adGroups));
+
+                    var appIdentity = new ClaimsIdentity(claims, "Basic", "Name", "Group");
+                    
+                    var currentIdentities = HttpContext.User.Identities as List<ClaimsIdentity>;
+
+                    var currentClaim = currentIdentities?.FirstOrDefault();
+
+                    //For some reason given identity without a claim in it
+                    if (currentClaim != null)
+                        currentIdentities.Remove(currentClaim);
+
+                    HttpContext.User.AddIdentity(appIdentity);
+
+                    var tokenHandler = new JwtSecurityTokenHandler();
+
+                    //This is just a random GUID
+                    
+                    var signingKey = "713C7335-3663-40F7-B086-17B813230D92";
+
+                    //certificate needs private key if used
+                    //var key = new X509SecurityKey(certificate);
+
+                    var simpleKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
+
+                    var tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = appIdentity,
+                        Expires = DateTime.UtcNow.AddDays(7),
+                        SigningCredentials = new SigningCredentials(simpleKey, SecurityAlgorithms.HmacSha256)
+                    };
+
+                    var jwttoken = tokenHandler.CreateToken(tokenDescriptor);
+
+                    ClaimsPrincipal cp = new ClaimsPrincipal(appIdentity);
+                    AuthenticationProperties authprops = new AuthenticationProperties();
+
+                    authprops.StoreTokens(new[]
+                    {
+                        new AuthenticationToken()
+                        {
+                            Name = "JWT",
+                            Value = jwttoken.ToString()
+                        }
+                    });
+
+                    HttpContext.SignInAsync(cp, authprops);
+                    
                     return true;
                 }
             }

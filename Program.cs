@@ -34,7 +34,9 @@ namespace urlshorten
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                    .UseUrls("https://velosimo.acbocc.us:443")
+                    .UseStartup<Startup>();
                 });
     }
 }
