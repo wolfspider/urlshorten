@@ -112,9 +112,9 @@ namespace urlshorten
                             
                             // Key not in cache, so get data.
                             //TODO: Handle null values way more elegantly
-                            var urlViewModel = await context?.UrlViewModels?
+                            var urlViewModel = context?.UrlViewModels?
                             .Where(x => x.ShortAddress == key)?
-                            .FirstOrDefaultAsync();
+                            .FirstOrDefault();
                             
                             cacheEntry = urlViewModel?.Address ?? "not found";
                             
