@@ -16,6 +16,13 @@ namespace urlshorten.Controllers
 {
     public class _trustController : Controller
     {
+        
+        /*This is an interesting situation to say the least- 
+        MacOS is wanting to have a relying trust while windows does not
+        need one at all. So for this I'm thinking that we use a controller here
+        Darwin and *nix but use DI for Windows and just need a way of getting it
+        to work for both...*/
+        
         public IActionResult Index(string wa = "", string wresult = "")
         {
 

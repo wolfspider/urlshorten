@@ -53,8 +53,6 @@ namespace urlshorten
                     ValidIssuer = "https://adfs.alachuacounty.us/adfs/services/trust"
                 };
                 options.CorrelationCookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
-
-
             })
             .AddCookie(cookieOptions => {
                 
@@ -65,7 +63,6 @@ namespace urlshorten
 
             });
 
-            //services.AddAuthentication();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("User", policy =>
@@ -99,7 +96,7 @@ namespace urlshorten
             app.UseAuthorization();
             
 
-            //app.UseADFS();
+            app.UseADFS();
 
             app.UseEndpoints(endpoints =>
             {
