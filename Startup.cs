@@ -87,7 +87,7 @@ namespace urlshorten
 
             app.UseBrowserLink();
             app.UseCookiePolicy();
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
