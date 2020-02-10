@@ -22,17 +22,17 @@ namespace urlshorten.Controllers
 
         public class UrlKnife
         {
-            public string url {get; set;}
-            public string normalizedUrl {get; set;}
-            public string removedTailOnUrl {get; set;}
-            public string protocol {get; set;}
-            public string onlyDomain {get; set;}
-            public string onlyParams {get; set;}
-            public string onlyUri {get; set;}
-            public string onlyUriWithParams {get; set;}
-            public Dictionary<string, string> onlyParamsJsn {get; set;}
-            public string type {get; set;}
-            public string port {get; set;}
+            public string url { get; set; }
+            public string normalizedUrl { get; set; }
+            public string removedTailOnUrl { get; set; }
+            public string protocol { get; set; }
+            public string onlyDomain { get; set; }
+            public string onlyParams { get; set; }
+            public string onlyUri { get; set; }
+            public string onlyUriWithParams { get; set; }
+            public Dictionary<string, string> onlyParamsJsn { get; set; }
+            public string type { get; set; }
+            public string port { get; set; }
 
         }
 
@@ -100,7 +100,7 @@ namespace urlshorten.Controllers
         public async Task<ActionResult<string>> Shorten([FromBody] dynamic kurl)
         {
             //_logger.LogInformation("Url shortened from original " + url);
-                  
+
             return "https://url.acbocc.us/" + await Task.Run(() =>
             {
 
@@ -109,20 +109,20 @@ namespace urlshorten.Controllers
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     WriteIndented = true
                 };
-       
+
+                //Rick Grimes says- kurl! gimme that knife! we're still hurr..thAts whut matters
+
                 //create a URL knife object
                 var knife = JsonSerializer.Deserialize<UrlKnife>(kurl.ToString(), options);
-                
+
                 if (!Uri.TryCreate(knife.normalizedUrl, UriKind.Absolute, out Uri uri) || null == uri)
                     return "invalid url (e.g. http://alachuacounty.us/Pages/AlachuaCounty)";
 
-                //TODO: fragment at end causes forward slash at end must be removed
-                                
-                var url = uri.Host + uri.PathAndQuery + uri.Fragment;
+                var url = (uri.Host + uri.PathAndQuery + uri.Fragment).TrimEnd('/');
 
                 using UrlShorten _urlShorten = new UrlShorten(url);
                 return _urlShorten.ShortenedUrl;
-         
+
             });
 
         }
@@ -130,18 +130,11 @@ namespace urlshorten.Controllers
         [HttpPost("{id}")]
         public async Task<ActionResult<int>> Decode(string id)
         {
-            //TODO: need to parse all the slashes in the url which means this needs to be parameter!
-
-            return await Task.Run(() => {
-
+            return await Task.Run(() =>
+            {
                 using UrlShorten _urlShorten = new UrlShorten();
                 return _urlShorten.Decode(id);
-
-                //Save the code here for shortened URL into one of the UrlView ents
-
-                //obviously, this part needs to be planned out more...
-
-            });            
+            });
         }
 
         // DELETE: api/Url/5
