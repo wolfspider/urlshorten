@@ -51,6 +51,10 @@ button.accept-policy {
   line-height: inherit;
 }
 
+.container {
+  overflow-y: scroll;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -60,6 +64,7 @@ html {
 
 body {
   /* Margin bottom by footer height */
+  height: 100%;
   margin-bottom: 60px;
 }
 .footer {
