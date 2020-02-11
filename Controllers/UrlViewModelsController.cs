@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
@@ -57,6 +58,8 @@ namespace urlshorten.Controllers
         {
             if (ModelState.IsValid)
             {
+                
+                urlViewModel.Modified = DateTime.UtcNow;
                 _context.Add(urlViewModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -96,6 +99,7 @@ namespace urlshorten.Controllers
             {
                 try
                 {
+                    urlViewModel.Modified = DateTime.UtcNow;
                     _context.Update(urlViewModel);
                     await _context.SaveChangesAsync();
                 }

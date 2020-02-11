@@ -13,6 +13,11 @@
         @:<div class="row"><h2>Duplicate URL Found! Please try another.</h2></div>
     }
 
+    if(ViewBag.WList == true)
+    {
+        @:<div class="row"><h2>URL Found in WhiteList! Please try another.</h2></div>
+    }
+
     if(ViewBag.Success == true)
     {
         @:<div class="row"><h2>URL Successfully Saved!</h2></div>

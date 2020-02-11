@@ -51,8 +51,11 @@ namespace urlshorten.Controllers
                 
         }
 
-        public IActionResult Index(bool duplicate = false, bool success = false, string redir = "")
+        //TODO: Simplify this function
+        public IActionResult Index(bool duplicate = false, bool success = false, string redir = "", bool wlist = false)
         {
+            if(wlist is true)
+                ViewBag.WList = true;
             
             if(duplicate is true)
                 ViewBag.Duplicate = true;

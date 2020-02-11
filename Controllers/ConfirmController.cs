@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -79,38 +80,54 @@ namespace urlshorten.Controllers
             try
             {
                 // TODO: Add update logic here
-      
-                    //perhaps index the records via URL hash for quick lookup in db
-                    
-                    if(!_context.UrlViewModels.Any(e => e.UrlHash == uv.UrlHash))
+               
+                List<string> wList = _context.WhiteListModel
+                .Select(w => w.Url.ToString()).ToList();
+
+                foreach (var address in wList)
+                {
+                    if(uv.Address.Contains(address))
+                        return RedirectToAction("Index", "Home", new { wlist = true });
+                }
+
+                //perhaps index the records via URL hash for quick lookup in db
+
+                if (!_context.UrlViewModels.Any(e => e.UrlHash == uv.UrlHash))
+                {
+
+                    if (User.Identity.IsAuthenticated && User.Identity.Name != null)
                     {
-                        
-                        uv.User = "DriveBy";
-
-                        uv.Title = uv.Title;
-
-                        //active is for disabling these if insecure..
-                        
-                        uv.Active = true;
-
-                        uv.Modified = DateTime.Now;
-
-                        //Full URL is just there for display but we only want the code in DB    
-
-                        uv.ShortAddress = uv.ShortAddress.Replace("https://url.acbocc.us/", "");
-
-                        _context.Add(uv);
-                        _context.SaveChanges();
+                        uv.User = User.Identity.Name;
                     }
                     else
                     {
-                        return RedirectToAction("Index","Home", new { duplicate = true });
+                        uv.User = "DriveBy";
                     }
-                
 
-                return RedirectToAction("Index","Home", new { success = true, redir = uv.ShortAddress });
+                    uv.Title = uv.Title;
+
+                    //active is for disabling these if insecure..
+
+                    uv.Active = true;
+
+                    uv.Modified = DateTime.Now;
+
+                    //Full URL is just there for display but we only want the code in DB    
+
+                    uv.ShortAddress = uv.ShortAddress.Replace("https://url.acbocc.us/", "");
+
+                    _context.Add(uv);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home", new { duplicate = true });
+                }
+
+
+                return RedirectToAction("Index", "Home", new { success = true, redir = uv.ShortAddress });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //Console.WriteLine(ex.ToString());
                 return RedirectToAction("Index","Home");

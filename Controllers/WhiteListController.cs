@@ -58,6 +58,7 @@ namespace urlshorten.Controllers
         {
             if (ModelState.IsValid)
             {
+                whiteListModel.Modified = DateTime.UtcNow;
                 _context.Add(whiteListModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -97,6 +98,8 @@ namespace urlshorten.Controllers
             {
                 try
                 {
+                    whiteListModel.Modified = DateTime.UtcNow;
+                    
                     _context.Update(whiteListModel);
                     await _context.SaveChangesAsync();
                 }
