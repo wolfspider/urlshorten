@@ -27,19 +27,9 @@ namespace urlshorten.Controllers
         {
 
             if (wresult != "" || wa != "")
-            {
-                
                 if (ValidateToken(wresult, "0CA2238D11AED5F1BB169FC1238340942D52C565", out String user))
-                {
-                    //var email = user;
-
-                    //ViewBag.email = email;
-
                     return RedirectToPage("/Home");
-                }
-
-            }
-
+                
             return Redirect("https://velosimo.acbocc.us");
 
         }
