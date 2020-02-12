@@ -54,7 +54,7 @@ namespace urlshorten.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Source,Url,Created,Modified")] WhiteListModel whiteListModel)
+        public async Task<IActionResult> Create([Bind("Id,Source,Url")] WhiteListModel whiteListModel)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace urlshorten.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Source,Url,Created,Modified")] WhiteListModel whiteListModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Source,Url")] WhiteListModel whiteListModel)
         {
             if (id != whiteListModel.Id)
             {

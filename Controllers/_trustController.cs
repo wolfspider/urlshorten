@@ -11,9 +11,12 @@ using System.Xml;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+
 
 namespace urlshorten.Controllers
 {
+    
     public class _trustController : Controller
     {
         
@@ -22,16 +25,23 @@ namespace urlshorten.Controllers
         need one at all. So for this I'm thinking that we use a controller here
         Darwin and *nix but use DI for Windows and just need a way of getting it
         to work for both...*/
+
+        private readonly IConfiguration _configure;
+
+        public _trustController(IConfiguration configure)
+        {
+            _configure = configure;
+        }
         
         public IActionResult Index(string wa = "", string wresult = "")
         {
 
-            if (wresult != "" || wa != "")
-                if (ValidateToken(wresult, "0CA2238D11AED5F1BB169FC1238340942D52C565", out String user))
+            if (wresult != "" || wa != "") {
+                if (ValidateToken(wresult, _configure["ADFSThumbprint:x509Cert"]))
                     return RedirectToPage("/Home");
-                
+            }
+             
             return Redirect("https://velosimo.acbocc.us");
-
         }
 
         public class SamlSignedXml : SignedXml
@@ -60,9 +70,9 @@ namespace urlshorten.Controllers
 
         // token is the string representation of the SAML1 token
         // expectedCertThumb is the expected certificate's thumbprint
-        protected bool ValidateToken(string token, string expectedCertThumb, out string userName)
+        protected bool ValidateToken(string token, string expectedCertThumb)
         {
-            userName = string.Empty;
+            string userName = string.Empty;
 
             if (string.IsNullOrEmpty(token)) return false;
 
