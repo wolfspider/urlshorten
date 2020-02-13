@@ -24,6 +24,7 @@ namespace urlshorten.Models
 
         public string Address { get; set; }
 
+        [Display(Name = "Link")]
         public string ShortAddress { get; set; }
         
     }
