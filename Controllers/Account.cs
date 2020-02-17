@@ -15,13 +15,9 @@ namespace urlshorten.Controllers
     {
         private readonly ILogger _logger;
 
-        //private readonly IHttpClientFactory _clientFactory;
-       
-
         public AccountController(ILogger<AccountController> logger)
         {
             _logger = logger;
-            //_clientFactory = clientFactory;
         }
 
         [HttpGet]

@@ -14,9 +14,12 @@ namespace urlshorten.Controllers
     {
         private readonly URLShortenDBContext _context;
 
-        public UrlViewModelsController(URLShortenDBContext context)
+        private readonly IUrlCache<string> _cache;
+
+        public UrlViewModelsController(URLShortenDBContext context, IUrlCache<string> cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         // GET: UrlViewModels
@@ -100,6 +103,10 @@ namespace urlshorten.Controllers
                 try
                 {
                     urlViewModel.Modified = DateTime.UtcNow;
+
+                    if(urlViewModel.Active == false)                   
+                    await _cache.Remove(urlViewModel.ShortAddress);
+
                     _context.Update(urlViewModel);
                     await _context.SaveChangesAsync();
                 }
