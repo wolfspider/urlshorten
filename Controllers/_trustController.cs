@@ -72,12 +72,13 @@ namespace urlshorten.Controllers
         // expectedCertThumb is the expected certificate's thumbprint
         protected bool ValidateToken(string token, string expectedCertThumb)
         {
-            string userName = string.Empty;
-
             if (string.IsNullOrEmpty(token)) return false;
 
-            var xd = new XmlDocument();
-            xd.PreserveWhitespace = true;
+            var xd = new XmlDocument
+            {
+                PreserveWhitespace = true
+            };
+
             xd.LoadXml(token);
 
             XmlNamespaceManager mgr = new XmlNamespaceManager(xd.NameTable);
@@ -147,7 +148,7 @@ namespace urlshorten.Controllers
                        claimNode.ChildNodes.Count == 1
                     )
                 {
-                    userName = claimNode.ChildNodes[0].InnerText;
+                    string userName = claimNode.ChildNodes[0].InnerText;
                     var groups = claimNodes[1].ChildNodes;
 
                     StringBuilder adGroup = new StringBuilder();
@@ -161,6 +162,15 @@ namespace urlshorten.Controllers
                     
                     claims.Add(new Claim("Name", userName));
                     claims.Add(new Claim("Group", adGroups));
+
+                    if (adGroups.Contains("ITS"))
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                    }
+                    else
+                    {
+                        return false;
+                    }
 
                     var appIdentity = new ClaimsIdentity(claims, "Basic", "Name", "Group");
                     

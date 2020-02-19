@@ -16,8 +16,11 @@ namespace urlshorten
 
         }
 
-        public DbSet<Models.UrlViewModel> UrlViewModels { get; set; }
+        public DbSet<UrlViewModel> UrlViewModels { get; set; }
 
-        public DbSet<urlshorten.Models.WhiteListModel> WhiteListModel { get; set; }
+        public DbSet<WhiteListModel> WhiteListModel { get; set; }
+
+        public DbSet<AdminModel> AdminModel { get; set; }
+
     }
 }

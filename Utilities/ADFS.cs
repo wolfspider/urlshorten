@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace urlshorten
 {
@@ -45,6 +47,15 @@ namespace urlshorten
 
                 claims.Add(new Claim("Name", userName));
                 claims.Add(new Claim("Group", groupsList));
+
+                if(groupsList.Contains("ITS"))
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                }
+                else
+                {
+                    httpContext.Response.Redirect("Account/Logout");
+                }   
 
                 var appIdentity = new ClaimsIdentity(claims, "Basic", "Name", "Group");
 
@@ -90,6 +101,7 @@ namespace urlshorten
 
             await next(httpContext);
         }
+        
 
     }
 
@@ -99,6 +111,5 @@ namespace urlshorten
         {
             return app.UseMiddleware<ADFS>();
         }
-
     }
 }

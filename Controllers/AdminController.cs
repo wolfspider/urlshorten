@@ -9,25 +9,26 @@ using Microsoft.EntityFrameworkCore;
 using urlshorten;
 using urlshorten.Models;
 
-namespace urlshorten.Controllers
+namespace urlshorten.Views
 {
+    
     [Authorize]
-    public class WhiteListController : Controller
+    public class AdminController : Controller
     {
         private readonly URLShortenDBContext _context;
 
-        public WhiteListController(URLShortenDBContext context)
+        public AdminController(URLShortenDBContext context)
         {
             _context = context;
         }
 
-        // GET: WhiteList
+        // GET: Admin
         public async Task<IActionResult> Index()
         {
-            return View(await _context.WhiteListModel.ToListAsync());
+            return View(await _context.AdminModel.ToListAsync());
         }
 
-        // GET: WhiteList/Details/5
+        // GET: Admin/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,40 +36,39 @@ namespace urlshorten.Controllers
                 return NotFound();
             }
 
-            var whiteListModel = await _context.WhiteListModel
+            var adminModel = await _context.AdminModel
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (whiteListModel == null)
+            if (adminModel == null)
             {
                 return NotFound();
             }
 
-            return View(whiteListModel);
+            return View(adminModel);
         }
 
-        // GET: WhiteList/Create
+        // GET: Admin/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: WhiteList/Create
+        // POST: Admin/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Source,Url")] WhiteListModel whiteListModel)
+        public async Task<IActionResult> Create([Bind("Id,User,Groups")] AdminModel adminModel)
         {
             if (ModelState.IsValid)
             {
-                whiteListModel.Modified = DateTime.UtcNow;
-                _context.Add(whiteListModel);
+                _context.Add(adminModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(whiteListModel);
+            return View(adminModel);
         }
 
-        // GET: WhiteList/Edit/5
+        // GET: Admin/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +76,22 @@ namespace urlshorten.Controllers
                 return NotFound();
             }
 
-            var whiteListModel = await _context.WhiteListModel.FindAsync(id);
-            if (whiteListModel == null)
+            var adminModel = await _context.AdminModel.FindAsync(id);
+            if (adminModel == null)
             {
                 return NotFound();
             }
-            return View(whiteListModel);
+            return View(adminModel);
         }
 
-        // POST: WhiteList/Edit/5
+        // POST: Admin/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Source,Url")] WhiteListModel whiteListModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,User,Groups")] AdminModel adminModel)
         {
-            if (id != whiteListModel.Id)
+            if (id != adminModel.Id)
             {
                 return NotFound();
             }
@@ -100,14 +100,12 @@ namespace urlshorten.Controllers
             {
                 try
                 {
-                    whiteListModel.Modified = DateTime.UtcNow;
-                    
-                    _context.Update(whiteListModel);
+                    _context.Update(adminModel);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!WhiteListModelExists(whiteListModel.Id))
+                    if (!AdminModelExists(adminModel.Id))
                     {
                         return NotFound();
                     }
@@ -118,10 +116,10 @@ namespace urlshorten.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(whiteListModel);
+            return View(adminModel);
         }
 
-        // GET: WhiteList/Delete/5
+        // GET: Admin/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,30 +127,30 @@ namespace urlshorten.Controllers
                 return NotFound();
             }
 
-            var whiteListModel = await _context.WhiteListModel
+            var adminModel = await _context.AdminModel
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (whiteListModel == null)
+            if (adminModel == null)
             {
                 return NotFound();
             }
 
-            return View(whiteListModel);
+            return View(adminModel);
         }
 
-        // POST: WhiteList/Delete/5
+        // POST: Admin/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var whiteListModel = await _context.WhiteListModel.FindAsync(id);
-            _context.WhiteListModel.Remove(whiteListModel);
+            var adminModel = await _context.AdminModel.FindAsync(id);
+            _context.AdminModel.Remove(adminModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool WhiteListModelExists(int id)
+        private bool AdminModelExists(int id)
         {
-            return _context.WhiteListModel.Any(e => e.Id == id);
+            return _context.AdminModel.Any(e => e.Id == id);
         }
     }
 }

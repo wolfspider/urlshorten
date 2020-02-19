@@ -13,6 +13,21 @@ namespace urlshorten
         {
             using (var context = new URLShortenDBContext(svc.GetRequiredService<DbContextOptions<URLShortenDBContext>>()))
             {
+                
+                //We need to initially set at least one admin here
+                if (!context.AdminModel.Any())
+                {
+                    context.AdminModel.AddRange(
+
+                        new Models.AdminModel
+                        {
+                            User = "jbennett@alachuacounty.us",
+                            Groups = ""
+                        }
+
+                    );
+                }
+
                 if (context.UrlViewModels.Any())
                 {
                     return; 

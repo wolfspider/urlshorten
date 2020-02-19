@@ -60,13 +60,15 @@ namespace urlshorten
                 cookieOptions.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
                 cookieOptions.Cookie.HttpOnly = true;
                 cookieOptions.LoginPath = "/Home";
-
             });
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("User", policy =>
                 policy.RequireClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims", "Name"));
+
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+     
             });
         }
 
