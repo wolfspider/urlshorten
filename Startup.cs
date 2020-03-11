@@ -42,7 +42,7 @@ namespace urlshorten
             })
             .AddWsFederation(options =>
             {
-                options.Wtrealm = "urn:sharepoint:velosimo";
+                options.Wtrealm = "urn:sharepoint:acbo";
                 options.MetadataAddress = "https://adfs.alachuacounty.us/federationmetadata/2007-06/federationmetadata.xml";
                 //options.Wreply = "https://intranet.acbocc.us/_trust/default.aspx";
                 
