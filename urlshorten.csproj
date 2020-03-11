@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <TieredCompilation>false</TieredCompilation>
-    <PublishReadyToRun>false</PublishReadyToRun>
+    <TieredCompilation>true</TieredCompilation>
+    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <ItemGroup>
