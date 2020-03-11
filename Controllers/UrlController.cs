@@ -85,7 +85,7 @@ namespace urlshorten.Controllers
         {
             //_logger.LogInformation("Url shortened from original " + url);
 
-            return "https://velosimo.acbocc.us/" + await Task.Run(() =>
+            return "https://acbo.cc/" + await Task.Run(() =>
             {
 
                 var options = new JsonSerializerOptions

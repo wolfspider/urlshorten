@@ -25,7 +25,7 @@ namespace urlshorten.Controllers
         {
                
             ViewData["ReturnUrl"] = returnUrl;
-            var redirectUrl = "https://velosimo.acbocc.us/";
+            var redirectUrl = "https://acbo.cc/";
             var challengeObj =  Challenge(
                 new AuthenticationProperties { RedirectUri = redirectUrl },
                 WsFederationDefaults.AuthenticationScheme);

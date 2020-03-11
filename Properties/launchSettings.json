@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "https://velosimo.acbocc.us",
+      "applicationUrl": "https://acbo.cc",
       "sslPort": 0
     },
     "iisExpress": {
