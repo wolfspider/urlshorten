@@ -8,46 +8,48 @@
     <h5 class="display-4">Alachua County URL Shortener Service</h5>
 </div>
 @{
-    if(ViewBag.Duplicate == true)
+    if (ViewBag.Duplicate == true)
     {
         @:<div class="row"><h2>Duplicate URL Found! Please try another.</h2></div>
     }
 
-    if(ViewBag.WList == true)
+    if (ViewBag.WList == true)
     {
         @:<div class="row"><h2>URL Found in WhiteList! Please try another.</h2></div>
     }
 
-    if(ViewBag.Success == true)
+    if (ViewBag.Success == true)
     {
         @:<div class="row"><h2>URL Successfully Saved!</h2></div>
         @:<div class="row"><h2>New Redirect Created: <a href="@ViewBag.Redirect">@ViewBag.Redirect</a></h2></div>
     }
 }
 
-
-<form method="post" action="/Confirm">
-    <div class="form-row">
-        <div class="col-sm-10">
-            <label for="url-entry" id="url-entry-label">Enter Url:</label>
-            <div class="input-group mb3 panel" id="url-entry">
-                <input asp-for="Address" type="text" id="url-entry-input" class="form-control form-control-lg" placeholder="e.g. https://alachuacounty.us/reallylong/url/thatgoes/somewhere.aspx" aria-label="Url Entry">
+@if (User.Identity.IsAuthenticated)
+{
+    <form method="post" action="/Confirm">
+        <div class="form-row">
+            <div class="col-sm-10">
+                <label for="url-entry" id="url-entry-label">Enter Url:</label>
+                <div class="input-group mb3 panel" id="url-entry">
+                    <input asp-for="Address" type="text" id="url-entry-input" class="form-control form-control-lg" placeholder="e.g. https://alachuacounty.us/reallylong/url/thatgoes/somewhere.aspx" aria-label="Url Entry">
+                </div>
+            </div>
+            <div class="col-sm-10 btn-buffer">
+                <a href="#" id="btn-short-url" class="btn btn-primary" onclick="getShortUrl()">Submit URL</a>
             </div>
         </div>
-        <div class="col-sm-10 btn-buffer">
-            <a href="#" id="btn-short-url" class="btn btn-primary" onclick="getShortUrl()">Submit URL</a>
-        </div>
-    </div>
-    <div class="form-row top-buffer">
-        <div class="col-sm-10">
-            <label for="url-entry" id="url-shorten-label">Shortened Url:</label>
-            <div class="input-group mb3 panel" id="url-entry">
-                <input asp-for="ShortAddress" type="text" id="url-shorten-input" class="form-control form-control-lg" placeholder="e.g. https://acbo.cc/bnCLfj" aria-label="Url Entry" />
+        <div class="form-row top-buffer">
+            <div class="col-sm-10">
+                <label for="url-entry" id="url-shorten-label">Shortened Url:</label>
+                <div class="input-group mb3 panel" id="url-entry">
+                    <input asp-for="ShortAddress" type="text" id="url-shorten-input" class="form-control form-control-lg" placeholder="e.g. https://acbo.cc/bnCLfj" aria-label="Url Entry" />
+                </div>
+            </div>
+            <div class="col-sm-10 btn-buffer">
+                <button type="submit" id="btn-confirm-url" class="btn btn-primary" style="display:none">Confirm</button>
             </div>
         </div>
-        <div class="col-sm-10 btn-buffer">
-            <button type="submit" id="btn-confirm-url" class="btn btn-primary" style="display:none">Confirm</button>
-        </div>
-    </div>
-    <input asp-for="UrlHash" type="hidden" id="url-shorten-hash" value="">
-</form>
+        <input asp-for="UrlHash" type="hidden" id="url-shorten-hash" value="">
+    </form>
+}

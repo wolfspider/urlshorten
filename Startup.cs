@@ -47,6 +47,7 @@ namespace urlshorten
                 //options.Wreply = "https://intranet.acbocc.us/_trust/default.aspx";
                 
                 options.CallbackPath = "/_trust";
+                
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
                     ValidateIssuer = true,

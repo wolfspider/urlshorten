@@ -52,6 +52,7 @@ namespace urlshorten.Controllers
         }
 
         //TODO: Simplify this function
+        [Authorize]
         public IActionResult Index(bool duplicate = false, bool success = false, string redir = "", bool wlist = false)
         {
             if(wlist is true)

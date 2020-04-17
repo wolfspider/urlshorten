@@ -10,6 +10,7 @@ using urlshorten.Models;
 namespace urlshorten.Controllers
 {
     
+    [Authorize]
     public class UrlViewModelsController : Controller
     {
         private readonly URLShortenDBContext _context;

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using urlshorten.Models;
 
 namespace urlshorten.Controllers
 {
+    [Authorize]
     public class ConfirmController : Controller
     {
         
