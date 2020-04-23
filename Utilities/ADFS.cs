@@ -16,14 +16,14 @@ namespace urlshorten
 {
     public class ADFS
     {
-
-        //We use this when WReply param is not used in startup
-
         readonly RequestDelegate next;
 
-        public ADFS(RequestDelegate next)
+        public IConfiguration Configuration { get; }
+
+        public ADFS(RequestDelegate next, IConfiguration configuration)
         {
             this.next = next;
+            Configuration = configuration;
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -71,8 +71,7 @@ namespace urlshorten
 
                 var tokenHandler = new JwtSecurityTokenHandler();
 
-                //TODO: We need to save this locally somewhere
-                var signingKey = "713C7335-3663-40F7-B086-17B813230D92";
+                var signingKey = Configuration["ADFSJWT:guid"];
 
                 var simpleKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
 
