@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,7 +24,7 @@ namespace urlshorten
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureIISIntegration();
-            services.ConfigureMSSqlContext(Configuration);
+            services.ConfigureSqlContext(Configuration);
             services.AddSingleton<IUrlCache<string>, UrlCache<string>>();
             services.AddControllersWithViews();
 
@@ -45,7 +39,6 @@ namespace urlshorten
             {
                 options.Wtrealm = "urn:sharepoint:acbo";
                 options.MetadataAddress = "https://adfs.alachuacounty.us/federationmetadata/2007-06/federationmetadata.xml";
-                //options.Wreply = "https://intranet.acbocc.us/_trust/default.aspx";
                 
                 options.CallbackPath = "/_trust";
                 
@@ -100,7 +93,7 @@ namespace urlshorten
             app.UseAuthorization();
             
 
-            app.UseADFS();
+            //app.UseADFS();
 
             app.UseEndpoints(endpoints =>
             {

@@ -26,7 +26,7 @@ function normalizeUrl(url) {
 function getShortUrl() {
     //response text needs to be specified here for return type
 
-    const redirHost = "https://acbo.cc/";
+    const redirHost = "https://localhost/";
 
     var url = document.querySelector("#url-entry-input").value;
     
