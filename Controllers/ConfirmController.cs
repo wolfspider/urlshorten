@@ -8,7 +8,7 @@ using urlshorten.Models;
 
 namespace urlshorten.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class ConfirmController : Controller
     {
         
@@ -116,7 +116,7 @@ namespace urlshorten.Controllers
 
                     //Full URL is just there for display but we only want the code in DB    
 
-                    uv.ShortAddress = uv.ShortAddress.Replace("https://localhost/", "");
+                    uv.ShortAddress = uv.ShortAddress.Replace("https://acbo.cc/", "");
 
                     _context.Add(uv);
                     _context.SaveChanges();
