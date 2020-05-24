@@ -6,16 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using urlshorten.Models;
 
 namespace urlshorten.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UrlController : ControllerBase
     {
         private readonly URLShortenDBContext _context;
@@ -87,7 +85,7 @@ namespace urlshorten.Controllers
         {
             //_logger.LogInformation("Url shortened from original " + url);
 
-            return "https://acbo.cc/" + await Task.Run(() =>
+            return "https://localhost/" + await Task.Run(() =>
             {
 
                 var options = new JsonSerializerOptions
