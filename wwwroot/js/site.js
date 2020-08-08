@@ -7,10 +7,7 @@
 function normalizeUrl(url) {
 
     //Use Url-Knife in order to match via fuzzy pattern
-
     var normUrl = Pattern.UrlArea.normalizeUrl(url);
-
-    console.log(normUrl);
 
     if (!!normUrl.normalizedUrl) {
         console.log("Got Normalized URL " + normUrl.normalizedUrl);

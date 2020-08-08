@@ -84,29 +84,34 @@ namespace urlshorten.Controllers
         public async Task<ActionResult<string>> Shorten([FromBody] dynamic kurl)
         {
             //_logger.LogInformation("Url shortened from original " + url);
-
-            return "https://localhost/" + await Task.Run(() =>
+            return await Task.Run(() =>
             {
-
-                var options = new JsonSerializerOptions
+                try
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    WriteIndented = true
-                };
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        WriteIndented = true
+                    };
 
-                //Rick Grimes says- kurl! gimme that knife! we're still hurr..thAts whut matters
+                    //Rick Grimes says- kurl! gimme that knife! we're still hurr..thAts whut matters
 
-                //create a URL knife object
-                var knife = JsonSerializer.Deserialize<UrlKnife>(kurl.ToString(), options);
+                    //create a URL knife object
+                    var knife = JsonSerializer.Deserialize<UrlKnife>(kurl.ToString(), options);
 
-                if (!Uri.TryCreate(knife.normalizedUrl, UriKind.Absolute, out Uri uri) || null == uri)
-                    return "invalid url (e.g. http://alachuacounty.us/Pages/AlachuaCounty)";
+                    if (!Uri.TryCreate(knife.normalizedUrl, UriKind.Absolute, out Uri uri) || null == uri)
+                        return "invalid url (e.g. http://mydomain.com/index.html)";
 
-                var url = (uri.Host + uri.PathAndQuery + uri.Fragment).TrimEnd('/');
+                    var url = (uri.Host + uri.PathAndQuery + uri.Fragment).TrimEnd('/');
 
-                using UrlShorten _urlShorten = new UrlShorten(url);
-                return _urlShorten.ShortenedUrl;
+                    using UrlShorten _urlShorten = new UrlShorten(url);
+                    return "https://localhost/" + _urlShorten.ShortenedUrl;
 
+                }
+                catch (Exception ex)
+                {
+                    return "error processing url please try again.";
+                }
             });
 
         }

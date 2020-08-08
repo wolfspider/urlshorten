@@ -37,15 +37,15 @@ namespace urlshorten
             })
             .AddWsFederation(options =>
             {
-                options.Wtrealm = "urn:sharepoint:acbo";
-                options.MetadataAddress = "https://adfs.alachuacounty.us/federationmetadata/2007-06/federationmetadata.xml";
+                options.Wtrealm = "urn:adfs:site";
+                options.MetadataAddress = "https://adfs.mydomain.com/federationmetadata/2007-06/federationmetadata.xml";
                 
                 options.CallbackPath = "/_trust";
                 
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = "https://adfs.alachuacounty.us/adfs/services/trust"
+                    ValidIssuer = "https://adfs.mydomain.com/adfs/services/trust"
                 };
                 options.CorrelationCookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
             })

@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace urlshorten
 {
@@ -21,7 +19,7 @@ namespace urlshorten
 
                         new Models.AdminModel
                         {
-                            User = "jbennett@alachuacounty.us",
+                            User = "admin@mydomain.com",
                             Groups = ""
                         }
 
@@ -38,8 +36,8 @@ namespace urlshorten
                     new Models.UrlViewModel
                     {
                         Active = true,
-                        Address = "https://alachuacounty.us",
-                        ShortAddress = "8q6pR",
+                        Address = "https://mydomain.com",
+                        ShortAddress = "QGe8i",
                         UrlHash = 12345,
                         Created = DateTime.Now,
                         Title = "Alachua County",
