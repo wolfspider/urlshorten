@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using urlshorten.Models;
 
 namespace urlshorten.Controllers
@@ -13,10 +14,12 @@ namespace urlshorten.Controllers
     {
         
         private readonly URLShortenDBContext _context;
+        private readonly IConfiguration _config;
 
-        public ConfirmController(URLShortenDBContext context)
+        public ConfirmController(URLShortenDBContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
         
         // GET: Confirm
@@ -81,7 +84,9 @@ namespace urlshorten.Controllers
         {
             try
             {
-                // TODO: Add update logic here
+                
+                //use non-standard port for debugging
+                var debugPort = _config["debugport:port"];
                
                 List<string> wList = _context.WhiteListModel
                 .Select(w => w.Url.ToString()).ToList();
@@ -114,10 +119,12 @@ namespace urlshorten.Controllers
 
                     uv.Modified = DateTime.Now;
 
+                    var urlBase = !String.IsNullOrEmpty(debugPort) ? "https://localhost:"+debugPort+"/" : "https://localhost/";
+
                     //Full URL is just there for display but we only want the code in DB    
-
-                    uv.ShortAddress = uv.ShortAddress.Replace("https://localhost/", "");
-
+                    uv.ShortAddress = uv.ShortAddress.Replace(urlBase, "");
+                    
+                    
                     _context.Add(uv);
                     _context.SaveChanges();
                 }

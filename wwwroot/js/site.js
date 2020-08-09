@@ -23,7 +23,8 @@ function normalizeUrl(url) {
 function getShortUrl() {
     //response text needs to be specified here for return type
 
-    const redirHost = "https://localhost/";
+    const redirHost = typeof urlBase == "string" ?
+     `https://localhost:${urlBase}/` : "https://localhost/";
 
     var url = document.querySelector("#url-entry-input").value;
     
@@ -42,7 +43,7 @@ function getShortUrl() {
             let input = document.querySelector("#url-shorten-input");
             input.value = text.replace(/\\([\s\S])|(")/g, "");
 
-            if (!text.includes("invalid"))
+            if (!text.includes("invalid") && !text.includes("error processing url please try again."))
                 document.querySelector("#btn-confirm-url").style.display = 'block';
 
             return fetch(`/api/Url/${text.replace(/\\([\s\S])|(")/g, "").replace(redirHost, "")}`, { method: "POST" })

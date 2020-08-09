@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using urlshorten.Models;
@@ -15,12 +16,15 @@ namespace urlshorten.Controllers
         private readonly ILogger<HomeController> _logger;
 
         private readonly IUrlCache<string> _cache;
+
+        private readonly IConfiguration _config;
         
-        public HomeController(ILogger<HomeController> logger, URLShortenDBContext context, IUrlCache<string> cache)
+        public HomeController(ILogger<HomeController> logger, URLShortenDBContext context, IUrlCache<string> cache, IConfiguration config)
         {
             _logger = logger;
             _context = context;
             _cache = cache;
+            _config = config;
         }
 
         // GET: Index/aBcDeF
@@ -50,6 +54,12 @@ namespace urlshorten.Controllers
         //[Authorize]
         public IActionResult Index(bool duplicate = false, bool success = false, string redir = "", bool wlist = false)
         {
+            //use non-standard port for debugging
+            var debugPort = _config["debugport:port"];
+            
+            if(!String.IsNullOrEmpty(debugPort))
+                ViewBag.DebugPort = debugPort;
+
             if(wlist is true)
                 ViewBag.WList = true;
             

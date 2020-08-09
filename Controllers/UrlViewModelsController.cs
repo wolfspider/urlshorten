@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using urlshorten.Models;
@@ -16,15 +17,24 @@ namespace urlshorten.Controllers
 
         private readonly IUrlCache<string> _cache;
 
-        public UrlViewModelsController(URLShortenDBContext context, IUrlCache<string> cache)
+        private readonly IConfiguration _config;
+
+        public UrlViewModelsController(URLShortenDBContext context, IUrlCache<string> cache, IConfiguration config)
         {
             _context = context;
             _cache = cache;
+            _config = config;
         }
 
         // GET: UrlViewModels
         public async Task<IActionResult> Index()
         {
+            //use non-standard port for debugging
+            var debugPort = _config["debugport:port"];
+            
+            if(!String.IsNullOrEmpty(debugPort))
+                ViewBag.DebugPort = debugPort;
+            
             return View(await _context.UrlViewModels.ToListAsync());
         }
 

@@ -31,7 +31,14 @@
                     @Html.DisplayFor(modelItem => item.Address)
                 </td>
                 <td>
+                    @if (ViewData["DebugPort"] != null) 
+                    {
+                    <a href="https://localhost:@ViewData["DebugPort"]/@Html.DisplayFor(modelItem => item.ShortAddress)">https://localhost:@ViewData["DebugPort"]/@Html.DisplayFor(modelItem => item.ShortAddress)</a>
+                    }
+                    else
+                    {
                     <a href="https://localhost/@Html.DisplayFor(modelItem => item.ShortAddress)">https://localhost/@Html.DisplayFor(modelItem => item.ShortAddress)</a>
+                    }
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -51,9 +58,9 @@ else
                 <th>
                     @Html.DisplayNameFor(model => model.Title)
                 </th>
-                <th>
+                @* <th>
                     @Html.DisplayNameFor(model => model.Address)
-                </th>
+                </th> *@
                 <th>
                     @Html.DisplayNameFor(model => model.ShortAddress)
                 </th>
@@ -66,11 +73,18 @@ else
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
-                <td>
+                @* <td>
                     @Html.DisplayFor(modelItem => item.Address)
-                </td>
+                </td> *@
                 <td>
+                    @if (ViewData["DebugPort"] != null) 
+                    {
+                    <a href="https://localhost:@ViewData["DebugPort"]/@Html.DisplayFor(modelItem => item.ShortAddress)">https://localhost:@ViewData["DebugPort"]/@Html.DisplayFor(modelItem => item.ShortAddress)</a>
+                    }
+                    else
+                    {
                     <a href="https://localhost/@Html.DisplayFor(modelItem => item.ShortAddress)">https://localhost/@Html.DisplayFor(modelItem => item.ShortAddress)</a>
+                    }
                 </td>
             </tr>
     }

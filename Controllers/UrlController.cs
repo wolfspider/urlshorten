@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using urlshorten.Models;
 
@@ -20,10 +21,13 @@ namespace urlshorten.Controllers
 
         private readonly ILogger<UrlController> _logger;
 
-        public UrlController(ILogger<UrlController> logger, URLShortenDBContext context)
+        private readonly IConfiguration _config;
+
+        public UrlController(ILogger<UrlController> logger, URLShortenDBContext context, IConfiguration config)
         {
             _logger = logger;
             _context = context;
+            _config = config;
         }
 
         // GET: api/Url
@@ -94,6 +98,9 @@ namespace urlshorten.Controllers
                         WriteIndented = true
                     };
 
+                    //use non-standard port for debugging
+                    var debugPort = _config["debugport:port"];
+
                     //Rick Grimes says- kurl! gimme that knife! we're still hurr..thAts whut matters
 
                     //create a URL knife object
@@ -105,7 +112,10 @@ namespace urlshorten.Controllers
                     var url = (uri.Host + uri.PathAndQuery + uri.Fragment).TrimEnd('/');
 
                     using UrlShorten _urlShorten = new UrlShorten(url);
-                    return "https://localhost/" + _urlShorten.ShortenedUrl;
+
+                    var urlBase = !String.IsNullOrEmpty(debugPort) ? "https://localhost:"+debugPort+"/" : "https://localhost/";
+
+                    return urlBase + _urlShorten.ShortenedUrl;
 
                 }
                 catch (Exception ex)

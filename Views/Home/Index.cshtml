@@ -50,3 +50,7 @@
         </div>
         <input asp-for="UrlHash" type="hidden" id="url-shorten-hash" value="">
     </form>
+    @if (ViewData["DebugPort"] != null) 
+    {
+        <script type="text/javascript">var urlBase = '@ViewData["DebugPort"]';</script>
+    }
